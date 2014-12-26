@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"./haystack"
-	"./search"
+	"haystack"
+	"pipeline"
+	"search"
 )
 
 func main() {
@@ -23,7 +24,8 @@ func main() {
 	h := haystack.New(query)
 
 	// make a pipeline to generate output
-	fmt.Printf("%s | xargs -0 -n 1000 -P 8 %s\n", h.AsBash(), s.AsBash())
+	p := pipeline.New(h, s)
+	fmt.Println(p.AsBash())
 }
 
 func usage() {
