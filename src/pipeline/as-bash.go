@@ -2,6 +2,8 @@ package pipeline
 
 import (
 	"fmt"
+	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -15,10 +17,12 @@ func (p *Pipeline) AsBash() string {
 }
 
 func Fanout() []string {
+	cpuCount := runtime.NumCPU()
+
 	return []string{
 		"xargs",
 		"-0",
 		"-n", "1000",
-		"-P", "8",
+		"-P", strconv.Itoa(cpuCount),
 	}
 }
