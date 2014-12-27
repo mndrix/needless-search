@@ -25,7 +25,11 @@ func main() {
 
 	// make a pipeline to generate output
 	p := pipeline.New(h, s)
-	fmt.Println(p.AsBash())
+	fmt.Fprintln(os.Stderr, p.AsBash())
+	err := p.Run()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func usage() {

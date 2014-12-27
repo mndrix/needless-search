@@ -1,9 +1,14 @@
 package search
 
-import "fmt"
-
 // AsBash renders the user's search as a bash command.  This is typically
 // an invocation of grep.
-func (s *Search) AsBash() string {
-	return fmt.Sprintf("grep -H -n --color '%s'", s.query)
+func (s *Search) AsBash() []string {
+	return []string{
+		"grep",
+		"-H",
+		"-n",
+		"--color",
+		"--binary-files=without-match",
+		s.query,
+	}
 }
