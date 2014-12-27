@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"syscall"
 )
 
 func (p *Pipeline) Run() error {
@@ -61,9 +62,33 @@ func run(commands [][]string) error {
 	for i := len(cmds) - 1; i >= 0; i-- {
 		err := cmds[i].Wait()
 		if err != nil {
-			return err
+			if commands[i][0] == "xargs" {
+				if status, ok := exitStatus(err); ok {
+					if status == 123 {
+						// one of the greps found no matches. that's expected
+						continue
+					}
+				}
+			}
+			return nil
 		}
 	}
 
 	return nil
+}
+
+// exitStatus returns the exit status and true if this error represents a
+// non-0 exit status; otherwis, returns false.
+func exitStatus(err error) (int, bool) {
+	if err == nil {
+		return 0, false
+	}
+
+	if e, ok := err.(*exec.ExitError); ok {
+		if status, ok := e.Sys().(syscall.WaitStatus); ok {
+			return status.ExitStatus(), true
+		}
+	}
+
+	return 0, false
 }

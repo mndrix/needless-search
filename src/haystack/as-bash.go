@@ -10,10 +10,19 @@ func (h *Haystack) AsBash() []string {
 	//
 	//     find . -type d -name .git -prune -o -type f -print0
 
-	return []string{
-		"mdfind",
-		"-onlyin", ".",
-		"-0",
-		h.query,
+	if h.env.IsMdfindAvailable() {
+		return []string{
+			"mdfind",
+			"-onlyin", ".",
+			"-0",
+			h.query,
+		}
+	} else {
+		return []string{
+			"find", ".",
+			"-type", "d", "-name", ".git", "-prune", // exclude .git
+			"-o",
+			"-type", "f", "-print0",
+		}
 	}
 }
