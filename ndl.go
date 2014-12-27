@@ -28,7 +28,7 @@ func main() {
 	h := haystack.New(env, query)
 
 	// make a pipeline to generate output
-	p := pipeline.New(h, s)
+	p := pipeline.New(env, h, s)
 	err := p.Run()
 	if err != nil {
 		panic(err)

@@ -1,18 +1,21 @@
 package pipeline
 
 import (
+	"environment"
 	"haystack"
 	"search"
 )
 
 type Pipeline struct {
-	h *haystack.Haystack
-	s *search.Search
+	env *environment.Environment
+	h   *haystack.Haystack
+	s   *search.Search
 }
 
-func New(h *haystack.Haystack, s *search.Search) *Pipeline {
+func New(env *environment.Environment, h *haystack.Haystack, s *search.Search) *Pipeline {
 	return &Pipeline{
-		h: h,
-		s: s,
+		env: env,
+		h:   h,
+		s:   s,
 	}
 }

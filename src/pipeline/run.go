@@ -12,6 +12,23 @@ import (
 )
 
 func (p *Pipeline) Run() error {
+	// can 'git grep' handle the entire pipeline?
+	if p.env.IsInGitRepository() {
+		commands := make([][]string, 1)
+		needle, _ := p.s.Needle()
+		commands[0] = []string{
+			"git", "grep",
+			"--untracked",
+			"-I", // don't match pattern in binary files
+			"-H", // include filename for each match
+			"-n", // include line number for each match
+			"--color",
+			"-e", needle,
+		}
+		return run(commands)
+	}
+
+	// can't use git; build pipeline from multiple commands
 	commands := make([][]string, 2)
 	commands[0] = p.h.AsBash()
 
