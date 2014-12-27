@@ -1,6 +1,7 @@
 package pipeline
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 )
@@ -44,7 +45,15 @@ func run(commands [][]string) error {
 	for _, cmd := range cmds {
 		err := cmd.Start()
 		if err != nil {
-			panic(err)
+			if e, ok := err.(*exec.Error); ok {
+				format := "Couldn't find a tool needed by our query plan\n" +
+					"Perhaps you need to install '%s'\n" +
+					"%s\n"
+				fmt.Fprintf(os.Stderr, format, e.Name, err.Error())
+				os.Exit(1)
+			} else {
+				panic(err)
+			}
 		}
 	}
 
