@@ -1,9 +1,13 @@
 package pipeline
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
+	"strconv"
+	"strings"
 	"syscall"
 )
 
@@ -11,9 +15,20 @@ func (p *Pipeline) Run() error {
 	commands := make([][]string, 2)
 	commands[0] = p.h.AsBash()
 
-	commands[1] = append(Fanout(), p.s.AsBash()...)
+	commands[1] = append(fanout(), p.s.AsBash()...)
 
 	return run(commands)
+}
+
+func fanout() []string {
+	cpuCount := runtime.NumCPU()
+
+	return []string{
+		"xargs",
+		"-0",
+		"-n", "1000",
+		"-P", strconv.Itoa(cpuCount),
+	}
 }
 
 func run(commands [][]string) error {
@@ -25,10 +40,17 @@ func run(commands [][]string) error {
 	}
 
 	// connect adjacent pipleline commands
+	buf := new(bytes.Buffer)
 	finalI := len(cmds) - 1
 	for i, cmd := range cmds {
 		var err error
 		cmd.Stderr = os.Stderr
+
+		// output command we're running; for debugging
+		if i > 0 {
+			buf.WriteString(" | ")
+		}
+		buf.WriteString(strings.Join(commands[i], " "))
 
 		// final command in the pipeline is special
 		if i == finalI {
@@ -41,6 +63,8 @@ func run(commands [][]string) error {
 			return err
 		}
 	}
+	buf.WriteTo(os.Stderr)
+	fmt.Fprintln(os.Stderr)
 
 	// start each process in the pipeline running
 	for _, cmd := range cmds {
