@@ -7,7 +7,6 @@ func (s *Search) AsBash() []string {
 		"grep",
 		"-H",
 		"-n",
-		"--color",
 		"--binary-files=without-match",
 		s.query,
 	}

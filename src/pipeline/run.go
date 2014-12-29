@@ -9,8 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
-
-	"environment"
 )
 
 func (p *Pipeline) Run() error {
@@ -24,10 +22,9 @@ func (p *Pipeline) Run() error {
 			"-I", // don't match pattern in binary files
 			"-H", // include filename for each match
 			"-n", // include line number for each match
-			"--color",
 			"-e", needle,
 		}
-		return run(p.env, commands)
+		return run(p, commands)
 	}
 
 	// can't use git; build pipeline from multiple commands
@@ -36,7 +33,7 @@ func (p *Pipeline) Run() error {
 
 	commands[1] = append(fanout(), p.s.AsBash()...)
 
-	return run(p.env, commands)
+	return run(p, commands)
 }
 
 func fanout() []string {
@@ -50,7 +47,17 @@ func fanout() []string {
 	}
 }
 
-func run(env *environment.Environment, commands [][]string) error {
+func run(p *Pipeline, commands [][]string) error {
+	env := p.env
+
+	// append output rendering process to pipeline
+	render := []string{
+		os.Args[0],
+		"--reformat-grep-output",
+		p.s.Query(),
+	}
+	commands = append(commands, render)
+
 	// create each command in the pipeline
 	cmds := make([]*exec.Cmd, 0, len(commands))
 	for _, command := range commands {

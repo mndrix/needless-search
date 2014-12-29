@@ -24,6 +24,12 @@ func main() {
 	// construct the user's environment
 	env := environment.New()
 
+	// maybe punt to grep formatting mode
+	if query == "--reformat-grep-output" {
+		mainReformatGrepOutput(env)
+		return
+	}
+
 	// convert user's needle into a search
 	s := search.New(query)
 
