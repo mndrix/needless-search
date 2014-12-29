@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+
+	"environment"
 )
 
 func (p *Pipeline) Run() error {
@@ -25,7 +27,7 @@ func (p *Pipeline) Run() error {
 			"--color",
 			"-e", needle,
 		}
-		return run(commands)
+		return run(p.env, commands)
 	}
 
 	// can't use git; build pipeline from multiple commands
@@ -34,7 +36,7 @@ func (p *Pipeline) Run() error {
 
 	commands[1] = append(fanout(), p.s.AsBash()...)
 
-	return run(commands)
+	return run(p.env, commands)
 }
 
 func fanout() []string {
@@ -48,7 +50,7 @@ func fanout() []string {
 	}
 }
 
-func run(commands [][]string) error {
+func run(env *environment.Environment, commands [][]string) error {
 	// create each command in the pipeline
 	cmds := make([]*exec.Cmd, 0, len(commands))
 	for _, command := range commands {
@@ -80,8 +82,7 @@ func run(commands [][]string) error {
 			return err
 		}
 	}
-	buf.WriteTo(os.Stderr)
-	fmt.Fprintln(os.Stderr)
+	env.Header(os.Stderr, buf.String())
 
 	// start each process in the pipeline running
 	for _, cmd := range cmds {

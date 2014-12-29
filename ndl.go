@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"environment"
 	"haystack"
@@ -11,6 +12,8 @@ import (
 )
 
 func main() {
+	start := time.Now()
+
 	// parse and verify user's request
 	if len(os.Args) < 2 {
 		usage()
@@ -33,6 +36,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	msg := fmt.Sprintf("Runtime: %s", time.Now().Sub(start))
+	env.Header(os.Stderr, msg)
 }
 
 func usage() {
