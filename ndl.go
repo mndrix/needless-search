@@ -38,7 +38,7 @@ func main() {
 	}
 
 	msg := fmt.Sprintf("Runtime: %s", time.Now().Sub(start))
-	env.Header(os.Stderr, msg)
+	env.WriteHeader(os.Stderr, msg)
 }
 
 func usage() {

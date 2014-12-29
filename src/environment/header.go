@@ -5,8 +5,8 @@ import (
 	"io"
 )
 
-// Header writes a header message to w and terminates it with a newline.
-func (e *Environment) Header(w io.Writer, msg string) {
+// WriteHeader writes a header message to w and terminates it with a newline.
+func (e *Environment) WriteHeader(w io.Writer, msg string) {
 	if e.isNotFirstHeader {
 		io.WriteString(w, "\n")
 	}

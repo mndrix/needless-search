@@ -82,7 +82,7 @@ func run(env *environment.Environment, commands [][]string) error {
 			return err
 		}
 	}
-	env.Header(os.Stderr, buf.String())
+	env.WriteHeader(os.Stderr, buf.String())
 
 	// start each process in the pipeline running
 	for _, cmd := range cmds {
