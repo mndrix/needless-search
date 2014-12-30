@@ -1,0 +1,24 @@
+package main
+
+type Language struct {
+	Extensions []string
+	Filenames  []string
+}
+
+// Languages maps a language nickname details about that language
+var Languages = map[string]*Language{
+	[% FOREACH lang IN langs ~%]
+	"[% lang.key %]" : &Language{
+		Extensions: []string{
+			[%- FOREACH ext IN lang.value.extensions %]
+			"[% ext %]",
+			[%- END %]
+		},
+		Filenames: []string{
+			[%- FOREACH filename IN lang.value.filenames %]
+			"[% filename %]",
+			[%- END %]
+		},
+	},
+	[% END %]
+}
