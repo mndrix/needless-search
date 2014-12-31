@@ -12,7 +12,8 @@ use YAML::XS qw( Load );
 my $info_by_alias;    # alias => language details
 
 # process linguist data
-my $langs = Load( scalar read_file $yaml_file);
+my $yaml_file = 'languages.yaml';
+my $langs     = Load( scalar read_file $yaml_file);
 while ( my ( $lang, $info ) = each %$langs ) {
     my @aliases = $lang;
     push @aliases, @{ $info->{aliases} // [] };
