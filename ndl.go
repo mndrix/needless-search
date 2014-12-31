@@ -14,15 +14,12 @@ import (
 func main() {
 	start := time.Now()
 
-	// parse and verify user's request
-	if len(os.Args) < 2 {
-		usage()
+	// construct the user's environment (includes parsing command line)
+	env := environment.New()
+	if env == nil {
 		return
 	}
-	query := os.Args[1]
-
-	// construct the user's environment
-	env := environment.New()
+	query := env.Query
 
 	// maybe punt to grep formatting mode
 	if query == "--reformat-grep-output" {
@@ -46,10 +43,3 @@ func main() {
 	msg := fmt.Sprintf("Runtime: %s", time.Now().Sub(start))
 	env.WriteHeader(os.Stderr, msg)
 }
-
-func usage() {
-	fmt.Fprintf(os.Stderr, usageString)
-}
-
-const usageString = `Usage: ndl pattern
-`
