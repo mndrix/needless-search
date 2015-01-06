@@ -20,7 +20,7 @@ func (h *Haystack) AsBash() []string {
 	} else {
 		return []string{
 			"find", ".",
-			"-type", "d", "-name", ".git", "-prune", // exclude .git
+			"-type", "d", "-name", ".git", "-prune", "-false", // exclude .git
 			"-o",
 			"-type", "f", "-print0",
 		}
