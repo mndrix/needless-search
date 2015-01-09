@@ -15,8 +15,12 @@ func main() {
 	start := time.Now()
 
 	// construct the user's environment (includes parsing command line)
-	env := environment.New()
-	if env == nil {
+	env, err := environment.New()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(1)
+		return
+	} else if env == nil {
 		return
 	}
 	query := env.Query
@@ -35,7 +39,7 @@ func main() {
 
 	// make a pipeline to generate output
 	p := pipeline.New(env, h, s)
-	err := p.Run()
+	err = p.Run()
 	if err != nil {
 		panic(err)
 	}

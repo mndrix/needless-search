@@ -1,6 +1,9 @@
 package environment
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 type OperatingMode int
 
@@ -29,10 +32,10 @@ type Environment struct {
 
 // New creates a new environment encapsulating all the user's preferences
 // (both for this search and in general)
-func New() *Environment {
+func New() (*Environment, error) {
 	if len(os.Args) < 2 {
 		Usage()
-		return nil
+		return nil, nil
 	}
 
 	env := new(Environment)
@@ -55,5 +58,5 @@ func New() *Environment {
 		}
 	}
 
-	return env
+	return env, nil
 }
