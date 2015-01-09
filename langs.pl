@@ -18,6 +18,9 @@ while ( my ( $lang, $info ) = each %$langs ) {
     my @aliases = $lang;
     push @aliases, @{ $info->{aliases} // [] };
 
+    # remove leading period from file extensions
+    s/^[.]// for @{ $info->{extensions} };
+
     for my $alias (@aliases) {
         $info_by_alias->{ nickname($alias) } = $info;
     }
