@@ -22,7 +22,7 @@ func main() {
 	query := env.Query
 
 	// maybe punt to grep formatting mode
-	if query == "--reformat-grep-output" {
+	if env.Mode == environment.ReformatGrepOutput {
 		mainReformatGrepOutput(env)
 		return
 	}

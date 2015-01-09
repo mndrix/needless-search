@@ -52,7 +52,7 @@ func run(p *Pipeline, commands [][]string) error {
 
 	// append output rendering process to pipeline
 	render := []string{
-		os.Args[0],
+		env.NdlPath,
 		"--reformat-grep-output",
 		p.s.Query(),
 	}
