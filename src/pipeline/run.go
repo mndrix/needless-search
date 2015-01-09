@@ -13,7 +13,9 @@ import (
 
 func (p *Pipeline) Run() error {
 	// can 'git grep' handle the entire pipeline?
-	if !p.env.IsMdfindAvailable() && p.env.IsInGitRepository() {
+	useGitGrep := !p.env.IsMdfindAvailable() &&
+		p.env.IsInGitRepository()
+	if useGitGrep {
 		commands := make([][]string, 1)
 		needle, _ := p.s.Needle()
 		commands[0] = []string{
