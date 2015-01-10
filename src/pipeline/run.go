@@ -14,6 +14,7 @@ import (
 func (p *Pipeline) Run() error {
 	// can 'git grep' handle the entire pipeline?
 	useGitGrep := !p.env.IsMdfindAvailable() &&
+		!p.env.WantsSpecificLanguages() &&
 		p.env.IsInGitRepository()
 	if useGitGrep {
 		commands := make([][]string, 1)
@@ -30,12 +31,24 @@ func (p *Pipeline) Run() error {
 	}
 
 	// can't use git; build pipeline from multiple commands
-	commands := make([][]string, 2)
-	commands[0] = p.h.AsBash()
-
-	commands[1] = append(fanout(), p.s.AsBash()...)
+	commands := make([][]string, 0, 2)
+	commands = append(commands, p.h.AsBash())
+	if p.env.WantsSpecificLanguages() {
+		commands = append(commands, languageFilter(p))
+	}
+	commands = append(commands, append(fanout(), p.s.AsBash()...))
 
 	return run(p, commands)
+}
+
+func languageFilter(p *Pipeline) []string {
+	return []string{
+		"grep",
+		"-z",
+		"-Z",
+		"-E",
+		"-e", p.env.LangsAsRegexString(),
+	}
 }
 
 func fanout() []string {

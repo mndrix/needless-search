@@ -3,6 +3,8 @@ package environment
 import (
 	"fmt"
 	"os"
+
+	"lang"
 )
 
 type OperatingMode int
@@ -22,6 +24,9 @@ type Environment struct {
 	// in which mode are we operating
 	Mode OperatingMode
 
+	// languages the user wants us to search
+	Languages []*lang.Language
+
 	// needed for IsInGitRepository()
 	lookedForGitRepo  bool
 	isInGitRepository bool
@@ -39,7 +44,9 @@ func New() (*Environment, error) {
 	}
 
 	env := new(Environment)
+	env.Languages = make([]*lang.Language, 0)
 
+ArgLoop:
 	for i, arg := range os.Args {
 		if i == 0 {
 			env.NdlPath = arg
@@ -50,13 +57,39 @@ func New() (*Environment, error) {
 		case "--reformat-grep-output":
 			env.Mode = ReformatGrepOutput
 			env.Query = os.Args[i+1]
-			return env
+			break ArgLoop
 		default:
-			env.Mode = Search
-			env.Query = arg
-			return env
+			if option, ok := isOption(arg); ok {
+				lang := lang.ByNickname(option)
+				if lang != nil {
+					env.Languages = append(env.Languages, lang)
+					continue
+				}
+				return nil, fmt.Errorf("Unknown option '%s'", arg)
+			} else {
+				env.Mode = Search
+				env.Query = arg
+				break ArgLoop
+			}
 		}
 	}
 
+	// final validation of the environment
+	if env.Query == "" {
+		return nil, fmt.Errorf("You must provide a search pattern")
+	}
+
 	return env, nil
+}
+
+func isOption(arg string) (string, bool) {
+	if len(arg) < 2 {
+		return "", false
+	}
+
+	if arg[0:2] == "--" {
+		return arg[2:], true
+	}
+
+	return "", false
 }
