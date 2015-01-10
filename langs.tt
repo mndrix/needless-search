@@ -1,12 +1,17 @@
-package main
+package lang
 
 type Language struct {
 	Extensions []string
 	Filenames  []string
 }
 
+func ByNickname(nick string) *Language {
+	l, _ := languages[nick]
+	return l
+}
+
 // Languages maps a language nickname details about that language
-var Languages = map[string]*Language{
+var languages = map[string]*Language{
 	[% FOREACH lang IN langs ~%]
 	"[% lang.key %]" : &Language{
 		Extensions: []string{

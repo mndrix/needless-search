@@ -1,3 +1,3 @@
 ndl
 languages.yaml
-langs.go
+src/lang/langs.go
