@@ -1,4 +1,4 @@
-:- ['src/search.pl'].
+:- ['src/pipeline.pl'].
 
 :- dynamic pattern/1.
 :- dynamic include_lang/1.
@@ -7,7 +7,7 @@ main(Args) :-
     get_time(Start),
     ( assert_environment(Args) -> true; halt(1) ),
 
-    phrase(search,Pipeline),
+    phrase(pipeline,Pipeline),
     warn("~s~n", [Pipeline]),
 
     shell(Pipeline, Status),
