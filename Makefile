@@ -8,3 +8,6 @@ src/lang/langs.go: languages.yaml langs.pl langs.tt
 
 languages.yaml:
 	curl -L --silent 'https://github.com/github/linguist/raw/master/lib/linguist/languages.yml' > languages.yaml
+
+swipl: ndl.pl
+	swipl -q -t main -o ndl -c ndl.pl
