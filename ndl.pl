@@ -7,7 +7,7 @@ main([Pattern]) :-
     asserta(pattern(Pattern)),
 
     phrase(search,Pipeline),
-    format(user_error, "~s~n", [Pipeline]),
+    warn("~s~n", [Pipeline]),
 
     shell(Pipeline, Status),
     get_time(Stop),
@@ -18,3 +18,7 @@ main([Pattern]) :-
 runtime(Start,Stop) :-
     Duration is 1000*(Stop - Start),
     format("Runtime: ~1f ms~n", [Duration]).
+
+
+warn(Format,Args) :-
+    format(user_error,Format,Args).
