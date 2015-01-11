@@ -1,6 +1,7 @@
 :- ['src/search.pl'].
 
 :- dynamic pattern/1.
+:- dynamic include_lang/1.
 
 main(Args) :-
     get_time(Start),
@@ -24,7 +25,21 @@ assert_environment(Args) :-
     maplist(assert_arg,Args).
 
 assert_arg(Arg) :-
-    assert_arg_pattern(Arg).
+    ( atom_concat('--',Lang,Arg) ->
+        assert_arg_lang(Lang)
+    ; otherwise ->
+        assert_arg_pattern(Arg)
+    ).
+
+assert_arg_lang(Lang) :-
+    ( include_lang(Lang) ->
+        true
+    ; lang(Lang) ->
+        assertz(include_lang(Lang))
+    ; otherwise ->
+        warn("Unknown language: ~s~n",[Lang]),
+        fail
+    ).
 
 assert_arg_pattern(Second) :-
     pattern(First),
