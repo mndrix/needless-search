@@ -1,6 +1,7 @@
 :- ['src/mdfind.pl'].
 :- ['src/xargs.pl'].
 :- ['src/grep.pl'].
+:- ['src/git-grep.pl'].
 
 search -->
     mdfind,
@@ -8,3 +9,5 @@ search -->
     xargs,
     " ",
     grep.
+search -->
+    git_grep.
