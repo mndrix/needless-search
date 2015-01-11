@@ -37,5 +37,6 @@ exit;
 # for needless search commands
 sub nickname($name) {
     $name =~ s/\s+/-/g;
+    $name =~ s/'//g;
     return lc($name);
 }

@@ -1,13 +1,13 @@
-all: src/lang/langs.go
+all: swipl
+
+go:
 	env GOPATH=`pwd` go build
 
-src/lang/langs.go: languages.yaml langs.pl langs.tt
-	mkdir -p src/lang
-	perl langs.pl > src/lang/langs.go
-	gofmt -w src/lang/langs.go
+src/langs.pl: languages.yaml langs.pl langs.tt
+	perl langs.pl > src/langs.pl
 
 languages.yaml:
 	curl -L --silent 'https://github.com/github/linguist/raw/master/lib/linguist/languages.yml' > languages.yaml
 
-swipl: ndl.pl
+swipl: ndl.pl src/langs.pl
 	swipl -q -t main -o ndl -c ndl.pl

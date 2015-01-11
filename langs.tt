@@ -1,29 +1,26 @@
-package lang
+%% lang(?Nickname)
+%
+%  True if a language has the given Nickname.
+[% FOREACH lang IN langs ~%]
+lang('[% lang.key %]').
+[% END %]
 
-type Language struct {
-	Extensions []string
-	Filenames  []string
-}
+%% lang_extension(?Nickname, ?Extension).
+%
+%  True if language with Nickname is sometimes stored
+%  in a file with this file Extension.
+[% FOREACH lang IN langs ~%]
+[%- FOREACH ext IN lang.value.extensions ~%]
+lang_extension('[% lang.key %]', '[% ext %]').
+[% END %]
+[%~ END %]
 
-func ByNickname(nick string) *Language {
-	l, _ := languages[nick]
-	return l
-}
-
-// Languages maps a language nickname details about that language
-var languages = map[string]*Language{
-	[% FOREACH lang IN langs ~%]
-	"[% lang.key %]" : &Language{
-		Extensions: []string{
-			[%- FOREACH ext IN lang.value.extensions %]
-			"[% ext %]",
-			[%- END %]
-		},
-		Filenames: []string{
-			[%- FOREACH filename IN lang.value.filenames %]
-			"[% filename %]",
-			[%- END %]
-		},
-	},
-	[% END %]
-}
+%% lang_filename(?Nickname, ?Filename).
+%
+%  True if language with Nickname is sometimes stored
+%  in a file named Filename.
+[% FOREACH lang IN langs ~%]
+[%- FOREACH filename IN lang.value.filenames ~%]
+lang_filename('[% lang.key %]', '[% filename %]').
+[% END %]
+[%~ END %]
