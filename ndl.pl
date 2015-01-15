@@ -1,8 +1,12 @@
 :- ['src/pipeline.pl'].
+:- ['src/reformat-grep-output.pl'].
 
 :- dynamic pattern/1.
 :- dynamic include_lang/1.
 
+main(['--reformat-grep-output',Pattern]) :-
+    !,
+    reformat_grep_output(Pattern).
 main(Args) :-
     get_time(Start),
     ( assert_environment(Args) -> true; halt(1) ),
