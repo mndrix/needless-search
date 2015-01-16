@@ -5,16 +5,18 @@
 % predicate has IO and logic intertwined, not as clean as I'd like
 reformat_grep_output(Pattern) :-
     prompt(_,''),
-    reformat_grep_output_(no(previous),Pattern).
+    working_directory(CwdAtom,CwdAtom),
+    atom_codes(CwdAtom,Cwd),
+    reformat_grep_output_(Cwd,no(previous),Pattern).
 
-reformat_grep_output_(PrevPath,Pattern) :-
+reformat_grep_output_(Cwd,PrevPath,Pattern) :-
     read_line_to_codes(current_input,Line),
     Line \= end_of_file,
     !,
     phrase(grep_line(Path,N,Content),Line),
-    print_line(PrevPath,Path,N,Content),
-    reformat_grep_output_(Path,Pattern).
-reformat_grep_output_(_,_).
+    print_match(Cwd,PrevPath,Path,N,Content),
+    reformat_grep_output_(Cwd,Path,Pattern).
+reformat_grep_output_(_,_,_).
 
 
 grep_line(Path,N,Content) -->
@@ -25,12 +27,17 @@ grep_line(Path,N,Content) -->
     rest_of_line(Content).
 
 
-print_line(PrevPath,Path,N,Content) :-
+print_match(Cwd,PrevPath,Path,N,Content) :-
     ( PrevPath = Path ->
         true  % no header line needed
     ; otherwise ->
         ( PrevPath = no(previous) -> true; nl ),
-        ansi_format([bold,fg(green)],"~s",[Path]),
+        ( phrase(string(Cwd),Path,RelativePath) ->
+            true
+        ; otherwise ->
+            RelativePath = Path
+        ),
+        ansi_format([bold,fg(green)],"~s",[RelativePath]),
         nl
     ),
     ansi_format([bold,fg(yellow)],"~d", [N]),
