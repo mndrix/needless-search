@@ -1,8 +1,5 @@
 all: swipl
 
-go:
-	env GOPATH=`pwd` go build
-
 src/langs.pl: languages.yaml langs.pl langs.tt
 	perl langs.pl > src/langs.pl
 
