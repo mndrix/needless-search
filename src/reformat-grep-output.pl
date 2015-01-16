@@ -1,3 +1,4 @@
+:- use_module(library(ansi_term), [ansi_format/3]).
 :- use_module(library(readutil), [read_line_to_codes/3]).
 :- ['src/dcg.pl'].
 
@@ -11,7 +12,10 @@ reformat_grep_output_(Pattern) :-
     Line \= end_of_file,
     !,
     phrase(grep_line(Path,N,Content),Line),
-    format("~s~n~d~n~s~n",[Path,N,Content]),
+    ansi_format([bold,fg(green)],"~s",[Path]),
+    nl,
+    ansi_format([bold,fg(yellow)],"~d", [N]),
+    format(":~s~n",[Content]),
     reformat_grep_output_(Pattern).
 reformat_grep_output_(_).
 
