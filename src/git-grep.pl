@@ -9,7 +9,7 @@ git_grep -->
     " -H", % include filename for each match
     " -n", % include line number for each match
     " --no-color",
-    " -e ", atom(Pattern).
+    " -e '", atom(Pattern), "'".
 
 
 inside_git_repository :-
