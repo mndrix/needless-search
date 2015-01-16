@@ -4,18 +4,19 @@
 
 % predicate has IO and logic intertwined, not as clean as I'd like
 reformat_grep_output(Pattern) :-
-    prompt(_,''),
+    prompt(_,''),  % don't show "|: " prompt
     working_directory(CwdAtom,CwdAtom),
     atom_codes(CwdAtom,Cwd),
-    reformat_grep_output_(Cwd,no(previous),Pattern).
+    reformat_grep_output_(Cwd,Pattern,no_previous_path).
 
-reformat_grep_output_(Cwd,PrevPath,Pattern) :-
+reformat_grep_output_(Cwd,Pattern,PrevPath) :-
     read_line_to_codes(current_input,Line),
     Line \= end_of_file,
     !,
     phrase(grep_line(Path,N,Content),Line),
-    print_match(Cwd,PrevPath,Path,N,Content),
-    reformat_grep_output_(Cwd,Path,Pattern).
+    ignore(print_path(Cwd,PrevPath,Path)),
+    print_content(N,Content),
+    reformat_grep_output_(Cwd,Pattern,Path).
 reformat_grep_output_(_,_,_).
 
 
@@ -27,18 +28,14 @@ grep_line(Path,N,Content) -->
     rest_of_line(Content).
 
 
-print_match(Cwd,PrevPath,Path,N,Content) :-
-    ( PrevPath = Path ->
-        true  % no header line needed
-    ; otherwise ->
-        ( PrevPath = no(previous) -> true; nl ),
-        ( phrase(string(Cwd),Path,RelativePath) ->
-            true
-        ; otherwise ->
-            RelativePath = Path
-        ),
-        ansi_format([bold,fg(green)],"~s",[RelativePath]),
-        nl
-    ),
+print_path(Cwd,PrevPath,Path) :-
+    PrevPath \= Path,
+    ( PrevPath = no_previous_path -> true; nl ),
+    ( append(Cwd,RelativePath,Path) -> true; RelativePath=Path ),
+    ansi_format([bold,fg(green)],"~s",[RelativePath]),
+    nl.
+
+
+print_content(N,Content) :-
     ansi_format([bold,fg(yellow)],"~d", [N]),
     format(":~s~n",[Content]).
