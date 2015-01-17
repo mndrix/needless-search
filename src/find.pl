@@ -1,4 +1,7 @@
+:- ['src/environment.pl'].
+
 find -->
+    { permissible_search_strategy(find) },
     "find .",
     " -type d",
     " -name .git",

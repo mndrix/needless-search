@@ -1,6 +1,8 @@
 :- ['src/dcg.pl'].
+:- ['src/environment.pl'].
 
 mdfind -->
+    { permissible_search_strategy(mdfind) },
     { pattern(Pattern) },
     { \+ mdfind_overlooks_our_files },
 

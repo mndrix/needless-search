@@ -32,6 +32,22 @@ assert_arg_pattern(Pattern) :-
     assertz(pattern(Pattern)).
 
 
+permissible_search_strategy(Strategy) :-
+    getenv('NDL_STRATEGY',Val),
+    !,
+    once( known_search_strategy(Val)
+        ; die("Invalid search strategy: ~s~n",[Val])
+        ),
+    Strategy = Val.
+permissible_search_strategy(Strategy) :-
+    known_search_strategy(Strategy).
+
+
+known_search_strategy(mdfind).
+known_search_strategy('git-grep').
+known_search_strategy(find).
+
+
 die(Format,Args) :-
     format(user_error,Format,Args),
     halt(1).

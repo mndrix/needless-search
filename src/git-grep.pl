@@ -1,7 +1,9 @@
 :- use_module(library(dcg_util),[list//3]).
 :- ['src/dcg.pl'].
+:- ['src/environment.pl'].
 
 git_grep -->
+    { permissible_search_strategy('git-grep') },
     { inside_git_repository },
     { pattern(Pattern) },
     "git grep",
