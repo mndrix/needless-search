@@ -22,14 +22,16 @@ assert_arg_lang(Lang) :-
     ; lang(Lang) ->
         assertz(include_lang(Lang))
     ; otherwise ->
-        warn("Unknown language: ~s~n",[Lang]),
-        fail
+        die("Unknown language: ~s~n",[Lang])
     ).
 
 assert_arg_pattern(Second) :-
     pattern(First),
-    warn("Two patterns given: '~s' then '~s'~n", [First,Second]),
-    !,
-    fail.
+    die("Two patterns given: '~s' then '~s'~n", [First,Second]).
 assert_arg_pattern(Pattern) :-
     assertz(pattern(Pattern)).
+
+
+die(Format,Args) :-
+    format(user_error,Format,Args),
+    halt(1).

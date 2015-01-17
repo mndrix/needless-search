@@ -7,7 +7,7 @@ main(['--reformat-grep-output',Pattern]) :-
     reformat_grep_output(Pattern).
 main(Args) :-
     get_time(Start),
-    ( assert_environment(Args) -> true; halt(1) ),
+    assert_environment(Args),
 
     phrase(pipeline,Pipeline),
     warn("~s~n", [Pipeline]),
