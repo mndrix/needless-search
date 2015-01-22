@@ -12,7 +12,7 @@ reformat_grep_output -->
     { executable(Exe) },
     atom(Exe),
     " --reformat-grep-output ",
-    atom(Pattern).
+    quoted_atom(Pattern).
 
 
 executable(Exe) :-

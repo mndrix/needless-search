@@ -7,4 +7,4 @@ grep -->
     " -n",
     " --binary-files=without-match",
     " ",
-    atom(Pattern).
+    quoted_atom(Pattern).

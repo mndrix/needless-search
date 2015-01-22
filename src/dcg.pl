@@ -3,6 +3,10 @@ atom(A) -->
     string(C).
 
 
+quoted_atom(A) -->
+    "'", atom(A), "'".
+
+
 integer(N) -->
     { ground(N) },
     !,
