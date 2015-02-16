@@ -5,6 +5,7 @@
 git_grep -->
     { permissible_search_strategy('git-grep') },
     { inside_git_repository },
+    { \+ uses_submodules },
     { pattern(Pattern) },
     "git grep",
     " --untracked",
@@ -18,6 +19,10 @@ git_grep -->
 
 inside_git_repository :-
     exists_directory('.git').
+
+
+uses_submodules :-
+    exists_file('.gitmodules').
 
 
 pathspec -->
