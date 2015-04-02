@@ -1,10 +1,14 @@
 :- ['src/environment.pl'].
 :- ['src/pipeline.pl'].
 :- ['src/reformat-grep-output.pl'].
+:- ['src/git-ignore-files.pl'].
 
 main(['--reformat-grep-output',Pattern]) :-
     !,
     reformat_grep_output(Pattern).
+main(['--git-ignore-files']) :-
+    !,
+    git_ignore_files.
 main(Args) :-
     get_time(Start),
     assert_environment(Args),
