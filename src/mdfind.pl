@@ -38,5 +38,7 @@ mdfind_overlooks_our_files :-
 
 
 % mdfind doesn't index files with these extensions
+mdfind_wont_index_extension(css).
 mdfind_wont_index_extension(json).
+mdfind_wont_index_extension(ts).
 mdfind_wont_index_extension(md).
