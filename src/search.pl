@@ -9,7 +9,6 @@
 search -->
     mdfind,
     filter_langs,
-    respect_gitignore,
     " | ",
     xargs,
     " ",
@@ -19,19 +18,7 @@ search -->
 search -->
     find,
     filter_langs,
-    respect_gitignore,
     " | ",
     xargs,
     " ",
     grep.
-
-
-respect_gitignore -->
-    { inside_git_repository },
-    !,
-    " | ",
-    { executable(Exe) },
-    atom(Exe),
-    " --git-ignore-files ".
-respect_gitignore -->
-    [].
