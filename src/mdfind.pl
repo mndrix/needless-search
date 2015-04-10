@@ -1,15 +1,18 @@
 :- ['src/dcg.pl'].
 :- ['src/environment.pl'].
+:- ['src/regex.pl'].
 
 mdfind -->
     { permissible_search_strategy(mdfind) },
-    { pattern(Pattern) },
     { \+ mdfind_overlooks_our_files },
+    { pattern(Pattern) },
+    { literal_prefix(Pattern,Prefix) },
+    { atom_length(Prefix,PrefixLen), PrefixLen > 3 },
 
     "mdfind",
     " -onlyin .",
     " -0 ",
-    query('TextContent'==Pattern).
+    query('TextContent'==Prefix).
 
 
 query(Query) -->
