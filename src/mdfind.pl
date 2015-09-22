@@ -3,6 +3,7 @@
 :- ['src/regex.pl'].
 
 mdfind -->
+    { fail },  % permanently disable
     { permissible_search_strategy(mdfind) },
     { \+ mdfind_overlooks_our_files },
     { pattern(Pattern) },
